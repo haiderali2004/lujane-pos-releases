@@ -1,0 +1,18 @@
+# Joins an installer uploaded in pieces (".part01", ".part02", ...) into the
+# real file on its release. Used when the shop's internet is too slow to upload
+# 150 MB in one go. Runs when join-request.json is pushed.
+name: Join installer pieces
+on:
+  push:
+    paths: ["join-request.json"]
+permissions:
+  contents: write
+jobs:
+  join:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node .github/join.mjs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
